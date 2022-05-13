@@ -20,10 +20,9 @@ class ExtraFieldSerializer(serializers.Serializer):
 
 
 class FileSerializer(serializers.ModelSerializer):
-    file_columns = ExtraFieldSerializer(source='*')
+    file_columns = ExtraFieldSerializer(source='*', read_only=True)
     class Meta():
         model = File
-        #fields = ('id', 'file', 'remark', 'timestamp')
         fields = ('id', 'file', 'remark', 'timestamp','file_columns')
 
 

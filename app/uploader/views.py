@@ -1,23 +1,18 @@
-from calendar import c
-from glob import escape
-import imp
-from warnings import filters
 from rest_framework import viewsets
 from .models import File
 from .serializers import FileSerializer
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
-from rest_framework.decorators import api_view
-import json
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 class FileViewSet(viewsets.ModelViewSet):
+    #permission_classes = [IsAuthenticated]
     serializer_class = FileSerializer
     queryset = File.objects.all()
 
 @api_view(['POST'])
+#@permission_classes([IsAuthenticated])
 def getdataview(request, pk, nrows):
     instance = File.objects.get(id=pk)
     file = instance.file.path
