@@ -1,6 +1,7 @@
 from calendar import c
 from glob import escape
 import imp
+from warnings import filters
 from rest_framework import viewsets
 from .models import File
 from .serializers import FileSerializer
@@ -30,10 +31,11 @@ def getdataview(request, pk, nrows):
 def filterview(request, pk, nrows):
     instance = File.objects.get(id=pk)
     file = instance.file.path
-    data = request.data
+    filters = request.data['filters']
+    sorters = request.data['sorters']
     new_str = ''
     reviews_df = pd.read_csv(file, nrows=nrows)
-    for key, value in data.items():
+    for key, value in filters.items():
         if key in reviews_df.columns:
             if type(value) == str:
                 value = "'" + value + "'"
@@ -46,7 +48,8 @@ def filterview(request, pk, nrows):
         return Response('Not valid columns for this csv file')
     else:
         reviews_df.columns = [column.replace(" ", "_") for column in reviews_df.columns]
-        reviews_df = reviews_df.query(new_str[5:])
+        sort_list = [sort_key.replace(" ", "_") for sort_key in sorters]
+        reviews_df = reviews_df.query(new_str[5:]).sort_values(by=sort_list, ascending=False)
         json_data = reviews_df.to_json(orient='records')
         send_data = json_data.replace("\"", "'")
         return Response(send_data)
