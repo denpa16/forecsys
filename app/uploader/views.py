@@ -17,22 +17,36 @@ class FileViewSet(viewsets.ModelViewSet):
     queryset = File.objects.all()
 
 @api_view(['POST'])
-def getdataview(request, pk):
+def getdataview(request, pk, nrows):
     instance = File.objects.get(id=pk)
     file = instance.file.path
-    reviews_df = pd.read_csv(file, nrows=5)
+    reviews_df = pd.read_csv(file, nrows=nrows)
     json_data = reviews_df.to_json(orient='records')
     send_data = json_data.replace("\"", "'")
     return Response(send_data)
 
 
 @api_view(['POST'])
-def filterview(request, pk):
+def filterview(request, pk, nrows):
     instance = File.objects.get(id=pk)
     file = instance.file.path
-    reviews_df = pd.read_csv(file, nrows=50)
-    reviews_df.columns =[column.replace(" ", "_") for column in reviews_df.columns]
-    df = reviews_df.query('year_released == 2009')
-    json_data = df.to_json(orient='records')
-    send_data = json_data.replace("\"", '')
-    return Response(send_data)
+    data = request.data
+    new_str = ''
+    reviews_df = pd.read_csv(file, nrows=nrows)
+    for key, value in data.items():
+        if key in reviews_df.columns:
+            if type(value) == str:
+                value = "'" + value + "'"
+                new_str += ' and ' + str(key).replace(" ", "_") + '==' + str(value)
+            if type(value) == dict:
+                filter_param = value.get('expression')
+                expr_value = value.get('filter_data')
+                new_str += ' and ' + str(key).replace(" ", "_") + filter_param + '=' + str(expr_value)
+    if new_str[5:] == '':
+        return Response('Not valid columns for this csv file')
+    else:
+        reviews_df.columns = [column.replace(" ", "_") for column in reviews_df.columns]
+        reviews_df = reviews_df.query(new_str[5:])
+        json_data = reviews_df.to_json(orient='records')
+        send_data = json_data.replace("\"", "'")
+        return Response(send_data)
