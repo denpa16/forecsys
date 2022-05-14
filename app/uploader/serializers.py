@@ -1,9 +1,6 @@
-from requests import request
 from rest_framework import serializers
 from .models import File
-import pathlib
 import pandas as pd
-import csv
 
 
 class ExtraFieldSerializer(serializers.Serializer):
