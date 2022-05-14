@@ -19,9 +19,14 @@
 - POST /api/v1/getdata/<int:pk>/filter/sort/<int:nrows> получения данных из конкретного файла с опциональными фильтрацией и сортировкой по одному или нескольким столбцам 
 
 ```
-<!DOCTYPE html>
-<html>
-<body><h1>Мой первый заголовок</h1>
-<p>Мой первый абзац.</p></body>
-</html>
+{
+	"filters":
+	{
+		"year released": {
+		"expression": ">",
+		"filter_data": 2001
+	}
+	},
+	"sorters": ["bpm"]
+}
 ```
