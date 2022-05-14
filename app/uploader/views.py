@@ -23,6 +23,7 @@ def getdataview(request, pk, nrows):
 
 
 @api_view(['POST'])
+#@permission_classes([IsAuthenticated])
 def filterview(request, pk, nrows):
     instance = File.objects.get(id=pk)
     file = instance.file.path
