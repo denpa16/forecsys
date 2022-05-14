@@ -16,15 +16,17 @@
 ## Методы взаимодействия с сервисом
 - POST /api/v1/files/ CRUD для загружаемых файлов
 - POST /api/v1/getdata/<int:pk>/<int:nrows> получение списка файлов с информацией о колонках:
-- POST /api/v1/getdata/<int:pk>/filter/sort/<int:nrows> получения данных из конкретного файла с опциональными фильтрацией и сортировкой по одному или нескольким столбцам ```
-{
-	"filters":
-	{
-		"year released": {
-		"expression": ">",
-		"filter_data": 2001
-	}
-	},
-	"sorters": ["bpm"]
+- POST /api/v1/getdata/<int:pk>/filter/sort/<int:nrows> получения данных из конкретного файла с опциональными фильтрацией и сортировкой по одному или нескольким столбцам ``` {
+"poll": {
+"title": "Лучший мотор?",
+"answers": [
+                {   
+                    "choice_id": 1,
+                    "answer": "1-JZ",
+                    "votes": 0
+                }
+]
 }
+}
+
 ```
